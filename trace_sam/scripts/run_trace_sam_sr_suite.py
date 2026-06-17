@@ -63,23 +63,23 @@ DEGRADATIONS = {
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser()
-    p.add_argument("--base_config", required=True)
-    p.add_argument("--device", default="cuda")
-    p.add_argument("--variants", default="ours_full", help="Comma-separated variants, or 'all'.")
-    p.add_argument("--seeds", default="1234", help="Comma-separated seeds. Use at least 3 for final paper tables.")
-    p.add_argument("--epochs", type=int, default=None)
-    p.add_argument("--max_batches", type=int, default=0)
-    p.add_argument("--max_images", type=int, default=None)
-    p.add_argument("--eval_degradations", default="clean_x4", help="Comma-separated degradation names, or 'all'.")
-    p.add_argument("--skip_train", action="store_true")
-    p.add_argument("--skip_infer", action="store_true")
-    p.add_argument("--skip_eval", action="store_true")
-    p.add_argument("--skip_fid", action="store_true")
-    p.add_argument("--skip_lpips", action="store_true")
-    p.add_argument("--cfg_root", default="configs/crackguard_diffsr/ablations")
-    p.add_argument("--results_root", default="results/crackguard_diffsr/sr_ablation")
-    return p.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--base_config", required=True)
+    parser.add_argument("--device", default="cuda")
+    parser.add_argument("--variants", default="ours_full", help="Comma-separated variants, or 'all'.")
+    parser.add_argument("--seeds", default="1234", help="Comma-separated seeds. Use at least 3 for final paper tables.")
+    parser.add_argument("--epochs", type=int, default=None)
+    parser.add_argument("--max_batches", type=int, default=0)
+    parser.add_argument("--max_images", type=int, default=None)
+    parser.add_argument("--eval_degradations", default="clean_x4", help="Comma-separated degradation names, or 'all'.")
+    parser.add_argument("--skip_train", action="store_true")
+    parser.add_argument("--skip_infer", action="store_true")
+    parser.add_argument("--skip_eval", action="store_true")
+    parser.add_argument("--skip_fid", action="store_true")
+    parser.add_argument("--skip_lpips", action="store_true")
+    parser.add_argument("--cfg_root", default="configs/ablations")
+    parser.add_argument("--results_root", default="runs/trace_sam_sr_ablation")
+    return parser.parse_args()
 
 
 def _run(cmd: list, dry: bool = False) -> None:
@@ -91,11 +91,11 @@ def _run(cmd: list, dry: bool = False) -> None:
 def _select_variants(selector: str) -> list[str]:
     if selector.strip().lower() == "all":
         return list(ABLATION_OVERRIDES)
-    out = [x.strip() for x in selector.split(",") if x.strip()]
-    unknown = [x for x in out if x not in ABLATION_OVERRIDES]
+    variants = [x.strip() for x in selector.split(",") if x.strip()]
+    unknown = [x for x in variants if x not in ABLATION_OVERRIDES]
     if unknown:
         raise KeyError(f"Unknown TRACE-SAM-SR variants: {unknown}. Available: {list(ABLATION_OVERRIDES)}")
-    return out
+    return variants
 
 
 def _select_degradations(selector: str) -> dict[str, int]:
@@ -161,7 +161,7 @@ def _mean_std_table(rows: list[dict], group_keys: list[str], metric_keys: list[s
                 var = sum((x - mean) ** 2 for x in vals) / max(1, len(vals) - 1)
                 item[f"{metric}_mean"] = mean
                 item[f"{metric}_std"] = var ** 0.5
-                item[f"{metric}_mean_std"] = f"{mean:.6g}卤{(var ** 0.5):.6g}"
+                item[f"{metric}_mean_std"] = f"{mean:.6g}+/-{(var ** 0.5):.6g}"
         out.append(item)
     return out
 

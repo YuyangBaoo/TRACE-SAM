@@ -67,7 +67,7 @@ def main() -> None:
     paths = cfg.get("paths", {})
     data_cfg = cfg.get("data", {})
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
-    out_dir = Path(args.out_dir or (Path(paths.get("work_dir", "playground/results/trace_sam_sr/main_pipeline")) / "inference" / args.split / f"D{args.degradation_id}")).resolve()
+    out_dir = Path(args.out_dir or (Path(paths.get("work_dir", "runs/trace_sam_sr/main_pipeline")) / "inference" / args.split / f"D{args.degradation_id}")).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
 
     ds = TraceBridgeCrackDataset(

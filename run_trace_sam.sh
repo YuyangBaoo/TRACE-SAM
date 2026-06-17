@@ -75,8 +75,6 @@ done
 if [[ -z "$PYTHON_BIN" ]]; then
   if [[ -x "$ROOT/.venv/bin/python" ]]; then
     PYTHON_BIN="$ROOT/.venv/bin/python"
-  elif [[ -x "/root/miniconda3/bin/python" ]]; then
-    PYTHON_BIN="/root/miniconda3/bin/python"
   elif command -v python3 >/dev/null 2>&1; then
     PYTHON_BIN="$(command -v python3)"
   else

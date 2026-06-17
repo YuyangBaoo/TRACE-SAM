@@ -195,7 +195,7 @@ def main() -> None:
         max_batches = int(val) if val not in (None, "", 0, "0") else None
     visible_batches = min(len(dl), int(max_batches)) if max_batches is not None else len(dl)
 
-    work_dir = Path(cfg.get("paths", {}).get("work_dir", "playground/results/trace_sam_sr/main_pipeline")).resolve()
+    work_dir = Path(cfg.get("paths", {}).get("work_dir", "runs/trace_sam_sr/main_pipeline")).resolve()
     work_dir.mkdir(parents=True, exist_ok=True)
     save_config(cfg, work_dir / "config_runtime.yaml")
 

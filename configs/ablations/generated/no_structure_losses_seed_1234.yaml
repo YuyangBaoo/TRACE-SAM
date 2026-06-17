@@ -19,7 +19,7 @@ paths:
   rrdb_pretrained_checkpoint: checkpoints/trace_sam_sr_rrdb_x4_100000.ckpt
   trace_sam_sr_checkpoint: ''
   trace_extractor_checkpoint: ''
-  work_dir: runs/crackguard_diffsr/sr_ablation/no_fracture_field/seed_1234
+  work_dir: runs/trace_sam_sr_ablation/no_structure_losses/seed_1234
   trace_aug_recognition_checkpoint: checkpoints/trace_sam_aug_recognition_final.pth
   trace_sam_checkpoint: checkpoints/trace_sam_final.pth
 data:
@@ -65,7 +65,7 @@ trace_sam_sr:
   field_hidden_channels: 32
   field_mode: predicted
   field_source: blend
-  use_fracture_field: false
+  use_fracture_field: true
   use_field_conditioned_denoiser: true
   use_gated_refiner: true
   refiner_channels: 32
@@ -130,9 +130,9 @@ training:
   diffusion_loss_weight: 0.05
   pixel_loss_weight: 1.0
   ssim_loss_weight: 0.1
-  degradation_loss_weight: 0.2
+  degradation_loss_weight: 0.0
   fracture_field_loss_weight: 0.0
-  bandlimited_hf_loss_weight: 0.08
+  bandlimited_hf_loss_weight: 0.0
   topology_loss_weight: 0.0
   background_hallucination_loss_weight: 0.0
   task_seg_loss_weight: 0.0

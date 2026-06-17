@@ -85,8 +85,7 @@ TRACE-SAM/
   configs/
     demo_cpu.yaml                 # tiny CPU smoke-test config
     paper_trace_sam_sr.yaml       # paper-default training/evaluation config
-    trace_sam_sr/main_pipeline.yaml
-    crackguard_diffsr/ablations/  # ablation variants used by the paper workflow
+    ablations/generated/          # release ablation variants
   demo_data/
     README.md
     manifest.csv                  # generated synthetic demo manifest
