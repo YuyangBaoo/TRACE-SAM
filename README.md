@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue)](pyproject.toml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Backbone](https://img.shields.io/badge/backbone-SAM%20ViT--B-lightgrey)](https://github.com/facebookresearch/segment-anything)
-[![Model Card](https://img.shields.io/badge/model-card-informational)](MODEL_CARD.md)
+[![Model Card](https://img.shields.io/badge/model-card-informational)](docs/MODEL_CARD.md)
 
 Official research implementation for **TRACE-SAM-SR**, a fracture-field guided
 trustworthy super-resolution framework for low-resolution concrete crack
@@ -92,7 +92,13 @@ TRACE-SAM/
     bridge_crack/, country_cement/
   docs/
     DATASET_PROTOCOL.md
+    MODEL_CARD.md
+    THIRD_PARTY_NOTICES.md
+    licenses/Apache-2.0.txt
     results/                      # selected metric summaries
+  scripts/
+    run_trace_sam.sh
+    run_trace_sam.ps1
   trace_sam/
     data/                         # dataset loaders and degradation operators
     evaluation/                   # segmentation and SR metrics
@@ -107,8 +113,6 @@ TRACE-SAM/
     evaluate_sr.py
     run_full_pipeline.py
   CITATION.cff
-  MODEL_CARD.md
-  THIRD_PARTY_NOTICES.md
   requirements.txt
   pyproject.toml
 ```
@@ -221,13 +225,13 @@ runs/demo/demo_trace_sam_sr_final.pth
 Run the dry workflow wrapper:
 
 ```bash
-./run_trace_sam.sh --preset dry --device cpu
+./scripts/run_trace_sam.sh --preset dry --device cpu
 ```
 
 Windows PowerShell:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\run_trace_sam.ps1 -Preset dry -Device cpu
+powershell -ExecutionPolicy Bypass -File .\scripts\run_trace_sam.ps1 -Preset dry -Device cpu
 ```
 
 ## Dataset Format
@@ -284,7 +288,7 @@ python tools/run_full_pipeline.py \
 Resume the final offline augmentation recognition stage on three GPUs:
 
 ```bash
-CUDA_VISIBLE_DEVICES=0,1,2 ./run_trace_sam.sh \
+CUDA_VISIBLE_DEVICES=0,1,2 ./scripts/run_trace_sam.sh \
   --preset full \
   --device cuda \
   --aug-gpus 3 \
@@ -382,8 +386,8 @@ rerun the workflow with the original data.
 The files under [trace_sam/vendors/segment_anything](trace_sam/vendors/segment_anything)
 are lightly adapted from Meta AI's Segment Anything implementation. SAM is
 licensed under Apache License 2.0; see
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and
-[LICENSES/Apache-2.0.txt](LICENSES/Apache-2.0.txt).
+[docs/THIRD_PARTY_NOTICES.md](docs/THIRD_PARTY_NOTICES.md) and
+[docs/licenses/Apache-2.0.txt](docs/licenses/Apache-2.0.txt).
 
 SAM model weights are not redistributed in this repository. Download
 `sam_vit_b_01ec64.pth` from the official Segment Anything release URL before

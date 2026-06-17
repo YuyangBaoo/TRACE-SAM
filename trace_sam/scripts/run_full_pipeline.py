@@ -58,7 +58,7 @@ def is_placeholder(path: str | None) -> bool:
     return s.startswith("/path/to") or s.startswith("PATH/TO")
 
 
-def validate_paths(cfg: dict, require_sr: bool):
+def validate_paths(cfg: dict, require_sr: bool, require_sam: bool):
     paths = cfg.get("paths", {})
     crack_root = Path(paths.get("data_root", ""))
     missing = []
@@ -73,9 +73,10 @@ def validate_paths(cfg: dict, require_sr: bool):
         sr_root = paths.get("sr_train_root") or paths.get("sr_pretrain_root") or paths.get("country_cement_root") or paths.get("sr_data_root")
         if is_placeholder(sr_root) or not Path(sr_root).exists():
             raise FileNotFoundError(f"Country Cement / SR pretrain root not found: {sr_root}")
-    sam_ckpt = paths.get("sam_checkpoint")
-    if is_placeholder(sam_ckpt) or not Path(sam_ckpt).exists():
-        print(f"[WARN] SAM checkpoint not found yet: {sam_ckpt}. Training will only work after this path is fixed.")
+    if require_sam:
+        sam_ckpt = paths.get("sam_checkpoint")
+        if is_placeholder(sam_ckpt) or not Path(sam_ckpt).exists():
+            print(f"[WARN] SAM checkpoint not found yet: {sam_ckpt}. Recognition stages will only work after this path is fixed.")
 
 
 def main():
@@ -103,7 +104,7 @@ def main():
     save_cfg(cfg, runtime_cfg)
 
     if not args.dry_run:
-        validate_paths(cfg, require_sr=run_sr_pretrain)
+        validate_paths(cfg, require_sr=run_sr_pretrain, require_sam=(run_joint or run_eval or run_aug_recognition))
 
     steps = int(args.eval_steps or cfg.get("workflow", {}).get("eval_diffusion_steps", cfg.get("sr", {}).get("timesteps", 100)))
     sr_pretrain_epochs = int(args.sr_pretrain_epochs or cfg.get("training", {}).get("sr_pretrain_epochs", cfg.get("training", {}).get("sr_epochs", 100)))
