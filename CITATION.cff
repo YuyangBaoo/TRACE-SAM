@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use TRACE-SAM-SR, please cite the manuscript and this software release."
+title: "TRACE-SAM-SR: Fracture-field Guided Trustworthy Super-Resolution for Low-Resolution Concrete Crack Segmentation"
+authors:
+  - family-names: Li
+    given-names: Baoxian
+  - family-names: Bao
+    given-names: Yuyang
+  - family-names: Chen
+    given-names: Si
+  - family-names: Bao
+    given-names: Longsheng
+  - family-names: Zhao
+    given-names: Jiakang
+  - family-names: Yu
+    given-names: Ling
+year: 2026
+version: 0.1.0
+license: MIT
+repository-code: "https://github.com/YuyangBaoo/TRACE-SAM"
+preferred-citation:
+  type: article
+  title: "Fracture-field Guided Trustworthy Super-Resolution for Low-Resolution Concrete Crack Segmentation"
+  authors:
+    - family-names: Li
+      given-names: Baoxian
+    - family-names: Bao
+      given-names: Yuyang
+    - family-names: Chen
+      given-names: Si
+    - family-names: Bao
+      given-names: Longsheng
+    - family-names: Zhao
+      given-names: Jiakang
+    - family-names: Yu
+      given-names: Ling
+  year: 2026
+  notes: "Manuscript"
+

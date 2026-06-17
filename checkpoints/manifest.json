@@ -1,0 +1,25 @@
+{
+  "checkpoints": [
+    {
+      "name": "sam_vit_b_01ec64.pth",
+      "required_for": "full TRACE-SAM recognition branch",
+      "distributed_in_repo": false,
+      "source": "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth",
+      "sha256": "EC2DF62732614E57411CDCF32A23FFDF28910380D03139EE0F4FCBE91EB8C912"
+    },
+    {
+      "name": "trace_sam_sr_topology_final.pth",
+      "required_for": "TRACE-SAM-SR inference and augmentation export",
+      "distributed_in_repo": false,
+      "source": "train with trace_sam.scripts.train_trace_sam_sr or provide a paper checkpoint",
+      "sha256": ""
+    },
+    {
+      "name": "trace_sam_final.pth",
+      "required_for": "full segmentation evaluation",
+      "distributed_in_repo": false,
+      "source": "train with trace_sam.scripts.train_trace_joint or provide a paper checkpoint",
+      "sha256": ""
+    }
+  ]
+}

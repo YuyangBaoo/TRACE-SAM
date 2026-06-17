@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Local outputs
+/data/
+/runs/
+/results/
+/playground/inputs/
+/playground/results/
+
+# Large model artifacts
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

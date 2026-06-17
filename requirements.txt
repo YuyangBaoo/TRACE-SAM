@@ -1,0 +1,6 @@
+numpy>=1.23
+scipy>=1.9
+pillow>=9.0
+pyyaml>=6.0
+einops>=0.6
+tqdm>=4.64

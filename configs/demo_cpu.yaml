@@ -1,0 +1,183 @@
+project_name: TRACE-SAM-SR-demo
+seed: 1234
+
+paths:
+  sr_train_root: demo_data/country_cement
+  sr_train_split: train
+  sr_val_root: demo_data/bridge_crack
+  sr_val_split: val
+  sr_test_root: demo_data/bridge_crack
+  sr_test_split: test
+  sr_pretrain_root: demo_data/country_cement
+  country_cement_root: demo_data/country_cement
+  seg_root: demo_data/bridge_crack
+  seg_train_split: train
+  seg_val_split: val
+  seg_test_split: test
+  data_root: demo_data/bridge_crack
+  crack_data_root: demo_data/bridge_crack
+  sam_checkpoint: checkpoints/sam_vit_b_01ec64.pth
+  rrdb_pretrained_checkpoint: ''
+  trace_sam_sr_checkpoint: ''
+  trace_extractor_checkpoint: ''
+  work_dir: runs/demo
+
+data:
+  mask_foreground: light
+  mask_threshold: 127
+
+model:
+  sr_backend: trace_sam_sr
+  sam_model_type: vit_b
+  hr_tile_size: 64
+  tile_stride: 64
+  sr_scale: 4
+  topology_channels: 4
+  num_degradations: 2
+  trace_embedding_dim: 8
+  trace_adapter_bottleneck: 8
+  trace_moe_experts: 2
+  trace_moe_topk: 1
+  reliability_fusion_mode: hybrid
+  use_sr_uncertainty: true
+  use_degradation_condition: true
+  use_logit_refiner: true
+  use_line_refiner: true
+  unfreeze_last_sam_blocks: 0
+
+sr:
+  timesteps: 4
+  beta_schedule: cosine
+  beta_s: 0.008
+  beta_end: 0.02
+  residual_rescale: 2.0
+  rrdb_feature_channels: 16
+  rrdb_blocks: 1
+  rrdb_growth_channels: 8
+  denoise_channels: 16
+  denoise_dim_mults: [1, 2]
+  use_attention: false
+  use_up_input: false
+
+trace_sam_sr:
+  field_channels: 10
+  field_hidden_channels: 8
+  field_mode: predicted
+  field_source: blend
+  use_fracture_field: true
+  use_field_conditioned_denoiser: true
+  use_gated_refiner: true
+  refiner_channels: 8
+  refiner_blocks: 1
+  refiner_scale: 0.04
+  background_gate_floor: 0.15
+  sample_mode: refined_rrdb
+  sample_diffusion_blend: 0.0
+  sample_chroma_source: lr_up_mean
+  proxy_diffusion_blend: 0.0
+  proxy_chroma_source: lr_up_mean
+
+training:
+  epochs: 1
+  sr_pretrain_epochs: 1
+  sr_topology_epochs: 1
+  pretrain_epochs: 1
+  topology_epochs: 1
+  sr_train_samples_per_image: 1
+  batch_size: 1
+  micro_batch_size: 1
+  grad_accum_steps: 1
+  sr_batch_size: 1
+  sr_micro_batch_size: 1
+  sr_grad_accum_steps: 1
+  joint_batch_size: 1
+  joint_micro_batch_size: 1
+  joint_grad_accum_steps: 1
+  aug_recognition_epochs: 1
+  aug_recognition_gpus: 0
+  aug_recognition_batch_size: 1
+  aug_recognition_micro_batch_size: 1
+  aug_recognition_grad_accum_steps: 1
+  aug_recognition_num_workers: 0
+  aug_recognition_find_unused_parameters: true
+  aug_recognition_mix_original: true
+  aug_recognition_original_prob: 0.5
+  aug_recognition_epoch_size: 4
+  num_workers: 0
+  optimizer: adamw
+  lr: 1.0e-4
+  topology_lr: 1.0e-4
+  pretrain_lr: 1.0e-4
+  joint_optimizer: adam
+  joint_lr: 5.0e-5
+  aug_recognition_optimizer: adam
+  aug_recognition_lr: 2.0e-5
+  weight_decay: 1.0e-4
+  joint_weight_decay: 0.0
+  aug_recognition_weight_decay: 0.0
+  amp: false
+  joint_amp: false
+  joint_sr_amp: false
+  aug_recognition_amp: false
+  cudnn_benchmark: false
+  grad_clip: 0.5
+  freeze_conditioner: true
+  train_only_trace_sam_sr_modules: true
+  freeze_sr: true
+  freeze_conditioned_denoiser: true
+  sr_loss_weight: 1.0
+  seg_loss_weight: 0.3
+  diffusion_loss_weight: 0.0
+  pixel_loss_weight: 1.0
+  ssim_loss_weight: 0.02
+  degradation_loss_weight: 0.05
+  fracture_field_loss_weight: 0.05
+  bandlimited_hf_loss_weight: 0.02
+  topology_loss_weight: 0.02
+  background_hallucination_loss_weight: 0.02
+  task_seg_loss_weight: 0.0
+  crack_focus_weight: 2.0
+  background_margin: 0.03
+
+loss:
+  bce_weight: 1.0
+  dice_weight: 1.0
+  tversky_weight: 0.5
+  boundary_weight: 0.5
+  cldice_weight: 0.2
+
+degradation:
+  train_degradation_ids: [0, 1]
+  main_eval_degradation_id: 0
+  jpeg_quality_range: [40, 80]
+  noise_sigma_range: [0.0, 0.02]
+  blur_sigma_range: [0.3, 0.8]
+  motion_kernel_range: [3, 5]
+
+augmentation:
+  patch_size: 64
+  output_size: 64
+  stride: 64
+  white_threshold: 240
+  white_ratio_filter: 0.999
+  target_patch_count: 4
+  out_dir: runs/demo/augmentation_patches
+  original_input: hr
+  delete_table: ''
+  label_foreground: light
+  label_threshold: 127
+
+workflow:
+  sr_backend: trace_sam_sr
+  run_sr_pretrain: true
+  run_sr_topology: true
+  run_joint_train: false
+  run_eval_main: false
+  run_generate_augmentation: false
+  run_offline_aug_train: false
+  run_degradation_robustness: false
+  run_ablation_suite: false
+  eval_diffusion_steps: 4
+  eval_threshold: 0.5
+  sr_export_batch_size: 1
+
