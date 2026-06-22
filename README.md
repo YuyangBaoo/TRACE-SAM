@@ -37,26 +37,44 @@ through downstream crack segmentation and morphology-oriented metrics.
   weights are downloaded separately from Meta's official Segment Anything
   release.
 
-## Overview
+## Method Overview
 
 <p align="center">
-  <a href="assets/fracture_field_overview.png">
-    <img src="assets/fracture_field_overview.png" alt="Neural Fracture Field overview" width="100%">
+  <a href="assets/method_framework.png">
+    <img src="assets/method_framework.png" alt="TRACE-SAM-SR overall framework" width="100%">
   </a>
 </p>
 
-TRACE-SAM-SR predicts fracture-aware intermediate maps alongside the restored
-image. These diagnostics make it possible to inspect whether high-frequency
-details are supported by crack-like evidence.
+TRACE-SAM-SR has four coupled parts: an LR observation branch, a mask-free
+Neural Fracture Field inferred from LR-up and initial SR evidence, a
+fracture-gated SR branch, and a reliability-aware SAM recognition branch.
+Solid arrows in the figure are used at inference; dashed supervision paths are
+training-only and do not provide masks or topology maps at test time.
+
+### Neural Fracture Field
 
 <p align="center">
-  <a href="assets/fracture_gate_heatmap.png">
-    <img src="assets/fracture_gate_heatmap.png" alt="Fracture gate heatmap" width="48%">
-  </a>
-  <a href="assets/restored_sr_example.png">
-    <img src="assets/restored_sr_example.png" alt="Restored SR example" width="48%">
+  <a href="assets/neural_fracture_field_mechanism.png">
+    <img src="assets/neural_fracture_field_mechanism.png" alt="Mask-free Neural Fracture Field construction and fracture-gated residual recovery" width="100%">
   </a>
 </p>
+
+The Neural Fracture Field is a multi-channel fracture-structure representation.
+It combines interpretable crack evidence with learned field correction, then
+uses the resulting fracture gate to strengthen crack-consistent residuals and
+suppress unsupported background sharpening.
+
+### Deployment Pathways
+
+<p align="center">
+  <a href="assets/deployment_pathways.png">
+    <img src="assets/deployment_pathways.png" alt="Online restoration and offline augmentation pathways" width="100%">
+  </a>
+</p>
+
+TRACE-SAM-SR can be used online as a restoration step before recognition, or
+offline as an augmentation engine for retraining a recognizer without adding SR
+latency at deployment.
 
 ## Results
 
@@ -78,7 +96,7 @@ protocol on the final paper split and checkpoints.
 
 ```text
 TRACE-SAM/
-  assets/                         # selected qualitative release assets
+  assets/                         # method figures and selected qualitative assets
   checkpoints/
     README.md                     # checkpoint placement and expected hashes
     manifest.json                 # release checkpoint manifest template
@@ -234,6 +252,15 @@ Windows PowerShell:
 powershell -ExecutionPolicy Bypass -File .\scripts\run_trace_sam.ps1 -Preset dry -Device cpu
 ```
 
+Run the executable demo pipeline:
+
+```bash
+python tools/run_full_pipeline.py --config configs/demo_cpu.yaml --device cpu --eval_steps 4
+```
+
+This runs TRACE-SAM-SR pretraining, topology fine-tuning, SR export, and
+lightweight reconstruction metrics on the bundled synthetic demo data.
+
 ## Dataset Format
 
 The labeled crack dataset uses one `image/` and one `label/` folder per split:
@@ -265,7 +292,7 @@ white foreground masks, set `light`.
 
 ## Train
 
-TRACE-SAM-SR topology fine-tuning:
+TRACE-SAM-SR topology fine-tuning after preparing the real datasets:
 
 ```bash
 python tools/train_sr.py \
@@ -276,7 +303,9 @@ python tools/train_sr.py \
   --output_name trace_sam_sr_topology
 ```
 
-Full one-click workflow:
+Paper workflow template. This command requires the real Bridge Crack/Country
+Cement data, SAM weights, and the compute budget implied by
+[configs/paper_trace_sam_sr.yaml](configs/paper_trace_sam_sr.yaml):
 
 ```bash
 python tools/run_full_pipeline.py \
