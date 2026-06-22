@@ -45,11 +45,11 @@ through downstream crack segmentation and morphology-oriented metrics.
   </a>
 </p>
 
-TRACE-SAM-SR has four coupled parts: an LR observation branch, a mask-free
-Neural Fracture Field inferred from LR-up and initial SR evidence, a
-fracture-gated SR branch, and a reliability-aware SAM recognition branch.
-Solid arrows in the figure are used at inference; dashed supervision paths are
-training-only and do not provide masks or topology maps at test time.
+**Overall framework (manuscript Fig. 1).** TRACE-SAM-SR first upsamples the
+LR image and produces a coarse SR image with an RRDB conditioner. A
+fracture-aware refinement stage then applies fracture cues, gate focus, and
+residual updates before the restored HR image is passed to the SAM crack
+extractor for the final crack mask.
 
 ### Neural Fracture Field
 
@@ -59,10 +59,11 @@ training-only and do not provide masks or topology maps at test time.
   </a>
 </p>
 
-The Neural Fracture Field is a multi-channel fracture-structure representation.
-It combines interpretable crack evidence with learned field correction, then
-uses the resulting fracture gate to strengthen crack-consistent residuals and
-suppress unsupported background sharpening.
+**Neural Fracture Field (manuscript Fig. 2).** The Neural Fracture Field is a
+multi-channel fracture-structure representation inferred from LR image evidence
+at test time. Training-only targets supervise the field channels, while
+inference uses no mask input; the resulting fracture gate strengthens
+crack-consistent residuals and suppresses unsupported background sharpening.
 
 ### Deployment Pathways
 
@@ -72,9 +73,9 @@ suppress unsupported background sharpening.
   </a>
 </p>
 
-TRACE-SAM-SR can be used online as a restoration step before recognition, or
-offline as an augmentation engine for retraining a recognizer without adding SR
-latency at deployment.
+**Deployment pathways (manuscript Fig. 3).** TRACE-SAM-SR can be used online
+as a restoration step before recognition, or offline as an augmentation engine
+for retraining a recognizer without adding SR latency at deployment.
 
 ## Results
 
